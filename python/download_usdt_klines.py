@@ -197,7 +197,7 @@ def progress_logger_thread(num_symbols, stop_event):
         print_progress_update(num_symbols)
         time_module.sleep(5)
 
-def download_usdt_klines_daily(days_back=365, max_workers=100):
+def download_usdt_klines_daily(days_back=365, max_workers=16):
     """Download 1m klines for all USDT pairs using multithreading"""
 
     # Get USDT symbols
@@ -267,6 +267,6 @@ def download_usdt_klines_daily(days_back=365, max_workers=100):
     print(f"Total time: {format_time(time_module.time() - stats['start_time'])}")
 
 if __name__ == "__main__":
-    # Download for last 12 months (365 days) using 100 parallel threads
-    download_usdt_klines_daily(days_back=365, max_workers=100)
+    # Download for last 12 months (365 days) using 16 parallel threads
+    download_usdt_klines_daily(days_back=365, max_workers=16)
 
