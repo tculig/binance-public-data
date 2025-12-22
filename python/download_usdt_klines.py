@@ -38,6 +38,31 @@ def get_usdt_symbols():
     usdt_symbols = [s for s in all_symbols if s.endswith('USDT')]
     return sorted(usdt_symbols)
 
+def get_top20_symbols():
+    """Return top 20 cryptocurrencies by market cap (December 2024)"""
+    return [
+        'BTCUSDT',
+        'ETHUSDT',
+        'XRPUSDT',
+        'BNBUSDT',
+        'SOLUSDT',
+        'DOGEUSDT',
+        'ADAUSDT',
+        'TRXUSDT',
+        'AVAXUSDT',
+        'SHIBUSDT',
+        'DOTUSDT',
+        'LINKUSDT',
+        'BCHUSDT',
+        'UNIUSDT',
+        'LTCUSDT',
+        'NEARUSDT',
+        'MATICUSDT',
+        'ICPUSDT',
+        'APTUSDT',
+        'STXUSDT',
+    ]
+
 def download_file_silent(base_path, file_name):
     """Download a file silently without progress bars, returns bytes downloaded"""
     download_path = f"{base_path}{file_name}"
@@ -197,11 +222,15 @@ def progress_logger_thread(num_symbols, stop_event):
         print_progress_update(num_symbols)
         time_module.sleep(5)
 
-def download_usdt_klines_daily(days_back=365, max_workers=16):
+def download_usdt_klines_daily(days_back=365, max_workers=16, top20_only=False):
     """Download 1m klines for all USDT pairs using multithreading"""
 
     # Get USDT symbols
-    symbols = get_usdt_symbols()
+    if top20_only:
+        symbols = get_top20_symbols()
+        print(f"Downloading TOP 20 cryptocurrencies by market cap")
+    else:
+        symbols = get_usdt_symbols()
     num_symbols = len(symbols)
     print(f"Found {num_symbols} USDT trading pairs")
 
@@ -267,6 +296,11 @@ def download_usdt_klines_daily(days_back=365, max_workers=16):
     print(f"Total time: {format_time(time_module.time() - stats['start_time'])}")
 
 if __name__ == "__main__":
+    import sys
+
+    # Check if --top20 flag is passed
+    top20_only = '--top20' in sys.argv
+
     # Download for last 12 months (365 days) using 16 parallel threads
-    download_usdt_klines_daily(days_back=365, max_workers=16)
+    download_usdt_klines_daily(days_back=365, max_workers=16, top20_only=top20_only)
 
